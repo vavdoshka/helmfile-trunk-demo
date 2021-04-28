@@ -17,6 +17,8 @@ helmDefaults:
   timeout: 600
 
 helmfiles:
-- path: releases/apps/scdf/helmfile.yaml
+
+- path: git::https://github.com/cloudposse/helmfiles.git@/releases/cluster-autoscaler/helmfile.yaml?ref=a9e11bf
   values:
-  - {{ toYaml .Values.scdf | nindent 4 }}
+  - git::https://github.com/cloudposse/helmfiles.git@/releases/cluster-autoscaler/defaults.yaml?ref=a9e11bf
+  - {{ toYaml .Values.cluster_autoscaler | nindent 4 }}

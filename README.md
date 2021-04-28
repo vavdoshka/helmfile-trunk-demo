@@ -89,7 +89,6 @@ here we do a pin to concrete git commit with `ref=a9e11bf` it can be any valid g
 * define level 1 generic profile values properties in `environments/globals/_common.yaml` add
 ```yaml
 cluster_autoscaler:
-    installed: true
     chart_version: 7.3.1
     image_repository: us.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler
     image_tag: v1.16.5
@@ -105,6 +104,7 @@ cluster_autoscaler:
 * define the level 3 concrete cluster profile properties for `xx1-stg-x` in `clusters/xx1-stg-x/locals/values.yaml`
 ```yaml
 cluster_autoscaler:
+    installed: true
     aws_region: "eu-west-3"
     iam_role_arn: "arn:partition:service:region:account:resource"
     cluster_name: "xx1-stg-x"
@@ -126,5 +126,5 @@ Satisfied with the default values shipped with the helmfile and do not want to r
 
 this snippet creates the app in the lcoal cluster where the ArgoCD is deployed
 ```
-./argocd app create scdf-xx1-stg-x --config-management-plugin helmfile --repo https://github.com/vavdoshka/helmfile-trunk-demo --plugin-env CLUSTER_ID=xx1-stg-x --plugin-env HELMFILE_GLOBAL_OPTIONS='--environment preproduction'  --dest-server https://kubernetes.default.svc --dest-namespace scdf-xx1-stg-x
+./argocd app create scdf-xx1-stg-x --config-management-plugin helmfile --repo https://github.com/vavdoshka/helmfile-trunk-demo --plugin-env CLUSTER_ID=xx1-stg-x --plugin-env HELMFILE_GLOBAL_OPTIONS='--environment staging'  --dest-server https://kubernetes.default.svc --dest-namespace scdf-xx1-stg-x
 ```

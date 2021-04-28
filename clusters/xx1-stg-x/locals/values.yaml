@@ -1,0 +1,8 @@
+scdf:
+  installed: true
+
+cluster_autoscaler:
+    installed: true
+    aws_region: "eu-west-3"
+    iam_role_arn: "arn:partition:service:region:account:resource"
+    cluster_name: "xx1-stg-x"
