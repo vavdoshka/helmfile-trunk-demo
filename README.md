@@ -11,7 +11,7 @@
 │       ├── production.yaml
 │       └── staging.yaml
 ├── helmfile.yaml                           # single entrypoint "imports" environments/base.yaml, executes the helmfiles from releases folder
-├── platforms
+├── clusters
 │   ├── xx1-prd-x                           # production
 │   │   └── locals
 │   │       └── values.yaml                 # concrete cluster "xx1-prd-x" profile
@@ -27,7 +27,7 @@
 ```
 
 ## Execution model overview
-root `helmfile.yaml` is a single entry point to execute any deployment, it expects to be called against a concrete platform passed as an environment varaible `PLATFORM_ID` (ex: `PLATFORM_ID=xx1-stg-x`) and passed environment profile name `--environment` (ex: `--environment staging`)
+root `helmfile.yaml` is a single entry point to execute any deployment, it expects to be called against a concrete cluster passed as an environment varaible `CLUSTER_ID` (ex: `CLUSTER_ID=xx1-stg-x`) and passed environment profile name `--environment` (ex: `--environment staging`)
 
 It will load the environment profile and execute the helmfiles defined in it, which should point to helmfiles with concrete releases under `releases/*` directory
 
@@ -37,7 +37,7 @@ It is important to understand the environment profile load model. It is based on
 
 * `environments/globals/_common.yaml` - Level 1 generic profile values properties used as a base
 * `environments/globals/${environment}.yaml` - Level 2 concrete environment profile properties used as an overlay to common properties
-* `platforms/${platform}/locals/values.yaml` - Level 3 concrete platform profile properties used as an overlay to environment and common properties
+* `clusters/${cluster}/locals/values.yaml` - Level 3 concrete cluster profile properties used as an overlay to environment and common properties
 
 
 ## How To deploy a new custom release?
@@ -57,21 +57,21 @@ scdf:
   rabbitmq:
     replicas: 1
 ```
-* define the level 3 concrete platform profile properties for `xx1-stg-x` in `platforms/xx1-stg-x/locals/values.yaml`
+* define the level 3 concrete cluster profile properties for `xx1-stg-x` in `clusters/xx1-stg-x/locals/values.yaml`
 ```yaml
 scdf:
   installed: true
 ```
-* produce the k8s manifests for `xx1-stg-x` by running `PLATFORM_ID=xx1-stg-x helmfile --environment staging template` in the root directory. You can verify the number of RabbitMQ server replicas by appending `| grep "rabbitmq/templates/statefulset.yaml" -A 15 | grep replicas` to the previous command.
-* now in order to "deploy" to production one needs to define the level 3 concrete platform profile properties for `xx1-prd-x` in `platforms/xx1-prd-x/locals/values.yaml`
+* produce the k8s manifests for `xx1-stg-x` by running `CLUSTER_ID=xx1-stg-x helmfile --environment staging template` in the root directory. You can verify the number of RabbitMQ server replicas by appending `| grep "rabbitmq/templates/statefulset.yaml" -A 15 | grep replicas` to the previous command.
+* now in order to "deploy" to production one needs to define the level 3 concrete cluster profile properties for `xx1-prd-x` in `clusters/xx1-prd-x/locals/values.yaml`
 ```yaml
 scdf:
   installed: true
 ```
-* produce the k8s manifests for `xx1-prd-x` by running `PLATFORM_ID=xx1-prd-x helmfile --environment production template` in the root directory. You can verify the number of RabbitMQ server replicas by appending `| grep "rabbitmq/templates/statefulset.yaml" -A 15 | grep replicas` to the previous command.
+* produce the k8s manifests for `xx1-prd-x` by running `CLUSTER_ID=xx1-prd-x helmfile --environment production template` in the root directory. You can verify the number of RabbitMQ server replicas by appending `| grep "rabbitmq/templates/statefulset.yaml" -A 15 | grep replicas` to the previous command.
 
 ## How To update the conrete release?
-It is a question of the updating the relevant profile property value, wether it is needed to be done on one single platform only or across all environment or all platforms globaly.
+It is a question of the updating the relevant profile property value, wether it is needed to be done on one single cluster only or across all environment or all clusters globaly.
 
 ## How To deploy a release shared in the git somewhere?
 Now this is where the most beatuful part commes in. You can reuse the helmfiles produced by the community or your teams internally. Here is how to do that:
@@ -102,14 +102,14 @@ cluster_autoscaler:
     request_cpu: "100m"
     request_memory: "128Mi"
 ```
-* define the level 3 concrete platform profile properties for `xx1-stg-x` in `platforms/xx1-stg-x/locals/values.yaml`
+* define the level 3 concrete cluster profile properties for `xx1-stg-x` in `clusters/xx1-stg-x/locals/values.yaml`
 ```yaml
 cluster_autoscaler:
     aws_region: "eu-west-3"
     iam_role_arn: "arn:partition:service:region:account:resource"
     cluster_name: "xx1-stg-x"
 ```
-* produce the k8s manifests for `xx1-stg-x` by running `PLATFORM_ID=xx1-stg-x helmfile --environment staging template` in the root directory.
+* produce the k8s manifests for `xx1-stg-x` by running `CLUSTER_ID=xx1-stg-x helmfile --environment staging template` in the root directory.
 
 Satisfied with the default values shipped with the helmfile and do not want to repeat them over and over again? 
 
