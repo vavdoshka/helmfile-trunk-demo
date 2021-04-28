@@ -1,0 +1,4 @@
+scdf:
+  version: 2.10.0
+  rabbitmq:
+    replicas: 3

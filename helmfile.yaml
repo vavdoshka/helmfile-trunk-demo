@@ -1,0 +1,22 @@
+bases:
+- "environments/base.yaml"
+---
+
+repositories:
+- name: bitnami
+  url: https://charts.bitnami.com/bitnami
+
+helmDefaults:
+  # when using helm 3.2+, automatically create release namespaces if they do not exist (default true)
+  createNamespace: true
+  # verify the chart before upgrading (only works with packaged charts not directories) (default false)
+  verify: false
+  # wait for k8s resources via --wait. (default false)
+  wait: true
+  # time in seconds to wait for any individual Kubernetes operation (like Jobs for hooks, and waits on pod/pvc/svc/deployment readiness) (default 300)
+  timeout: 600
+
+helmfiles:
+- path: releases/apps/scdf/helmfile.yaml
+  values:
+  - {{ toYaml .Values.scdf | nindent 4 }}

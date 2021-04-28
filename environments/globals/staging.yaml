@@ -1,0 +1,3 @@
+scdf:
+  rabbitmq:
+    replicas: 1

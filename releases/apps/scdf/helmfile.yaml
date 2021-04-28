@@ -1,0 +1,12 @@
+releases:
+- name: scdf
+  installed: {{ .Values | get "installed" false }}
+
+  chart: bitnami/spring-cloud-dataflow
+  version: {{ .Values.version }}
+  labels:
+    chart: spring-cloud-dataflow
+  values:
+    - values/_common.yaml.gotmpl
+    - values/{{ .Environment.Name }}.yaml.gotmpl
+  missingFileHandler: Info
