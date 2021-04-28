@@ -121,3 +121,10 @@ Satisfied with the default values shipped with the helmfile and do not want to r
   - {{ toYaml .Values.cluster_autoscaler | nindent 4 }}
 ```
 * cleanup the `cluster_autoscaler` values from generic profile values properties in `environments/globals/_common.yaml`
+
+## How to integrate into ArgoCD
+
+this snippet creates the app in the lcoal cluster where the ArgoCD is deployed
+```
+./argocd app create scdf-xx1-stg-x --config-management-plugin helmfile --repo https://github.com/vavdoshka/helmfile-trunk-demo --plugin-env CLUSTER_ID=xx1-stg-x --plugin-env HELMFILE_GLOBAL_OPTIONS='--environment preproduction'  --dest-server https://kubernetes.default.svc --dest-namespace scdf-xx1-stg-x
+```
