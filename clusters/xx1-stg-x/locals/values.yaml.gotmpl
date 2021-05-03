@@ -1,0 +1,6 @@
+scdf:
+  installed: true
+  cluster_overrides:
+    rabbitmq:
+      # any function call is supprted
+      enabled: {{ exec "echo" (list "false") | indent 2 }}

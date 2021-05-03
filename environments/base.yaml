@@ -3,11 +3,11 @@ environments:
     values:
     - environments/globals/_common.yaml
     - environments/globals/staging.yaml
-    - clusters/{{ requiredEnv "CLUSTER_ID" }}/locals/values.yaml
+    - clusters/{{ requiredEnv "CLUSTER_ID" }}/locals/values.yaml.gotmpl
 
 
   production:
     values:
     - environments/globals/_common.yaml
     - environments/globals/production.yaml
-    - clusters/{{ requiredEnv "CLUSTER_ID" }}/locals/values.yaml
+    - clusters/{{ requiredEnv "CLUSTER_ID" }}/locals/values.yaml.gotmpl
